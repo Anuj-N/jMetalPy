@@ -257,6 +257,28 @@ class HyperVolume(QualityIndicator):
         return "Hypervolume (Fonseca et al. implementation)"
 
 
+class Spacing(QualityIndicator) :
+	def __init__(self, reference_front: np.array = None) :
+		super(Spacing, self).__init__(is_minimization=True)
+		self.reference_front = reference_front
+
+	def compute(self, front: np.array) -> float:
+		return np.std(np.array([
+			np.min([
+		        np.sum(np.abs(y - x))
+		        for j, y in enumerate(front)
+		        if i != j
+		    ])
+		    for i, x in enumerate(front)
+		]), ddof=1)
+
+	def get_short_name(self) -> str:
+		return 'Spacing'
+
+	def get_name(self) -> str:
+		return "Spacing"
+
+
 class MultiList:
     """A special front structure needed by FonsecaHyperVolume.
 
@@ -354,3 +376,4 @@ class MultiList:
             node.next[i].prev[i] = node
             if bounds[i] > node.cargo[i]:
                 bounds[i] = node.cargo[i]
+

@@ -357,3 +357,4 @@ class NSGAIII(NSGAII):
 
     def get_name(self) -> str:
         return 'NSGAIII'
+
