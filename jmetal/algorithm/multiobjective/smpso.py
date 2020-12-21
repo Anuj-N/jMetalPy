@@ -441,7 +441,7 @@ class EMSMPSO(SMPSO) :
 				self.speed[i][var] = \
 					self.__velocity_constriction(
 						self.__constriction_coefficient(c1, c2) *
-						(self.momentum[i][var] + \
+						(self.speed[i][var] + \
 							(c1 * r1 * (best_particle.variables[var] - swarm[i].variables[var])) + \
 							(c2 * r2 * (best_global.variables[var] - swarm[i].variables[var]))
 						),
