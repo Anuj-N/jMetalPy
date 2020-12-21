@@ -270,7 +270,7 @@ class Spacing(QualityIndicator) :
 		        if i != j
 		    ])
 		    for i, x in enumerate(front)
-		]), ddof=1)
+		]), ddof=1) if len(front) > 1 else 0
 
 	def get_short_name(self) -> str:
 		return 'Spacing'

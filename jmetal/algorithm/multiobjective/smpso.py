@@ -402,23 +402,27 @@ class EMSMPSO(SMPSO) :
 		self.mutation_operator = mutation
 		self.leaders = leaders
 
-		self.c1 = 0.7
-		self.c2 = 0.7
-		self.beta = 0.9
-
+		self.c1_min = 1.5
+		self.c1_max = 2.5
+		self.c2_min = 1.5
+		self.c2_max = 2.5
 		self.r1_min = 0.0
 		self.r1_max = 1.0
 		self.r2_min = 0.0
 		self.r2_max = 1.0
+		self.min_weight = 0.1
+		self.max_weight = 0.1
 		self.change_velocity1 = -1
 		self.change_velocity2 = -1
+		self.beta = 0.1
 
 		self.dominance_comparator = DominanceComparator()
 
 		self.speed = numpy.zeros((self.swarm_size, self.problem.number_of_variables), dtype=float)
-		self.mom = numpy.zeros((self.swarm_size, self.problem.number_of_variables), dtype=float)
+		self.momentum = numpy.zeros((self.swarm_size, self.problem.number_of_variables), dtype=float)
 		self.delta_max, self.delta_min = numpy.empty(problem.number_of_variables), \
 										 numpy.empty(problem.number_of_variables)
+
 
 
 	def update_velocity(self, swarm: List[FloatSolution]) -> None:
@@ -428,17 +432,20 @@ class EMSMPSO(SMPSO) :
 
 			r1 = round(random.uniform(self.r1_min, self.r1_max), 1)
 			r2 = round(random.uniform(self.r2_min, self.r2_max), 1)
+			c1 = round(random.uniform(self.c1_min, self.c1_max), 1)
+			c2 = round(random.uniform(self.c2_min, self.c2_max), 1)
+			wmax = self.max_weight
 
 			for var in range(swarm[i].number_of_variables):
-				self.mom[i][var] = self.beta*self.mom[i][var] + (1-self.beta)*self.speed[i][var]
-				self.speed[i][var] = self.__velocity_constriction(
-					self.mom[i][var] + \
-						(self.c1 * r1 * (best_particle.variables[var] - swarm[i].variables[var])) + \
-						(self.c2 * r2 * (best_global.variables[var] - swarm[i].variables[var])),
-					self.delta_max, 
-					self.delta_min, 
-					var
-				)
+				self.momentum[i][var] = self.beta*self.momentum[i][var] + (1-self.beta)*self.speed[i][var]
+				self.speed[i][var] = \
+					self.__velocity_constriction(
+						self.__constriction_coefficient(c1, c2) *
+						(self.momentum[i][var] + \
+							(c1 * r1 * (best_particle.variables[var] - swarm[i].variables[var])) + \
+							(c2 * r2 * (best_global.variables[var] - swarm[i].variables[var]))
+						),
+						self.delta_max, self.delta_min, var)
 
 	def __velocity_constriction(self, value: float, delta_max: [], delta_min: [], variable_index: int) -> float:
 		result = value
