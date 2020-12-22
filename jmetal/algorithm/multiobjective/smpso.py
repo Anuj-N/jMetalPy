@@ -402,9 +402,9 @@ class EMSMPSO(SMPSO) :
 		self.mutation_operator = mutation
 		self.leaders = leaders
 
-		self.c1_min = 1.5
+		self.c1_min = 0.5
 		self.c1_max = 2.5
-		self.c2_min = 1.5
+		self.c2_min = 0.5
 		self.c2_max = 2.5
 		self.r1_min = 0.0
 		self.r1_max = 1.0
@@ -437,7 +437,7 @@ class EMSMPSO(SMPSO) :
 				self.momentum[i][var] = beta*self.momentum[i][var] + (1-beta)*self.speed[i][var]
 				self.speed[i][var] = \
 					self.__velocity_constriction(
-						self.__constriction_coefficient(c1, c2) *
+						self.__constriction_coefficient(c1, c2, beta) *
 						(self.momentum[i][var] + \
 							(c1 * r1 * (best_particle.variables[var] - swarm[i].variables[var])) + \
 							(c2 * r2 * (best_global.variables[var] - swarm[i].variables[var]))
@@ -453,12 +453,26 @@ class EMSMPSO(SMPSO) :
 
 		return result
 
-	def __constriction_coefficient(self, c1: float, c2: float) -> float:
-		rho = c1 + c2
-		if rho <= 4:
-			result = 1.0
-		else:
-			result = 2.0 / (2.0 - rho - sqrt(pow(rho, 2.0) - 4.0 * rho))
+	def __constriction_coefficient(self, c1: float, c2: float, beta: float, type_c=1) -> float:
+		phi = c1 + c2
+
+		if type_c == 3 :
+			if phi <= 4 :
+				result = 1.0
+			else :
+				result = 2.0 / (2.0 - phi - sqrt(pow(phi, 2.0) - 4.0 * phi))
+		else :
+			k = 4*(1-beta)
+			if phi < k:
+				result = 1.0
+			else:
+				if type_c == 1 :
+					result = 2/(3+sqrt(25-5*k)) if phi >= 2 else 1
+				else :
+					if k >= 2 :
+						result = 2/(3+sqrt(25-5*k))
+					else :		
+						result = 1/4 if phi >= 2 else 1
 
 		return result
 
@@ -479,4 +493,3 @@ def _change_reference_point(algorithm: SMPSORP):
 			reference_points.append(read[i:i + number_of_objectives])
 
 		algorithm.update_reference_point(reference_points)
-
