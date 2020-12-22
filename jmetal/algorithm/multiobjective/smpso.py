@@ -410,14 +410,11 @@ class EMSMPSO(SMPSO) :
 		self.r1_max = 1.0
 		self.r2_min = 0.0
 		self.r2_max = 1.0
-		self.min_weight = 0.1
-		self.max_weight = 0.1
 		self.change_velocity1 = -1
 		self.change_velocity2 = -1
-		self.beta = 0.1
+		self.beta_min, self.beta_max = 0, 1
 
 		self.dominance_comparator = DominanceComparator()
-
 		self.speed = numpy.zeros((self.swarm_size, self.problem.number_of_variables), dtype=float)
 		self.momentum = numpy.zeros((self.swarm_size, self.problem.number_of_variables), dtype=float)
 		self.delta_max, self.delta_min = numpy.empty(problem.number_of_variables), \
@@ -434,14 +431,14 @@ class EMSMPSO(SMPSO) :
 			r2 = round(random.uniform(self.r2_min, self.r2_max), 1)
 			c1 = round(random.uniform(self.c1_min, self.c1_max), 1)
 			c2 = round(random.uniform(self.c2_min, self.c2_max), 1)
-			wmax = self.max_weight
+			beta = round(random.uniform(self.beta_min, self.beta_max), 1)
 
 			for var in range(swarm[i].number_of_variables):
-				self.momentum[i][var] = self.beta*self.momentum[i][var] + (1-self.beta)*self.speed[i][var]
+				self.momentum[i][var] = beta*self.momentum[i][var] + (1-beta)*self.speed[i][var]
 				self.speed[i][var] = \
 					self.__velocity_constriction(
 						self.__constriction_coefficient(c1, c2) *
-						(self.speed[i][var] + \
+						(self.momentum[i][var] + \
 							(c1 * r1 * (best_particle.variables[var] - swarm[i].variables[var])) + \
 							(c2 * r2 * (best_global.variables[var] - swarm[i].variables[var]))
 						),
@@ -453,6 +450,15 @@ class EMSMPSO(SMPSO) :
 			result = delta_max[variable_index]
 		if value < delta_min[variable_index]:
 			result = delta_min[variable_index]
+
+		return result
+
+	def __constriction_coefficient(self, c1: float, c2: float) -> float:
+		rho = c1 + c2
+		if rho <= 4:
+			result = 1.0
+		else:
+			result = 2.0 / (2.0 - rho - sqrt(pow(rho, 2.0) - 4.0 * rho))
 
 		return result
 
