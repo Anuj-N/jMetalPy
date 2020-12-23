@@ -453,22 +453,16 @@ class EMSMPSO(SMPSO) :
 
 		return result
 
-	def __constriction_coefficient(self, c1: float, c2: float, beta: float, chi_scheme=1) -> float:
+	def __constriction_coefficient(self, c1: float, c2: float, beta: float) -> float:
 		phi = c1 + c2
 		k = 4*(1 - beta)
+		delta = pow(phi, 2) - k*phi
 
-		if chi_scheme == 1 :
-			return 1 if phi < k \
-				else (2/(3 + sqrt(25 - 5*k)) if phi >= 2 else 1)
-		elif chi_scheme == 2 :
-			return 1 if phi < k \
-				else (
-					2/(3 + sqrt(25 - 5*k)) if k >= 2 
-					else (1/4 if phi >= 2 else 1)
-				)
+		if delta < 0 :
+			return 1
 		else :
-			return 1 if phi <= 4 \
-				else 2/(2 - phi - sqrt(pow(phi, 2) - 4*phi))
+			eig = (abs(phi-2) + sqrt(delta))/2
+			return 1 if eig <= 1 else -1/eig
 
 def _change_reference_point(algorithm: SMPSORP):
 	""" Auxiliar function to read new reference points from the keyboard for the SMPSO/RP algorithm
