@@ -458,7 +458,7 @@ class EMSMPSO(SMPSO) :
 		k = 4*(1 - beta)
 		delta = pow(phi, 2) - k*phi
 
-		if delta < 0 :
+		if delta <= 0 :
 			return 1
 		else :
 			eig = (abs(phi-2) + sqrt(delta))/2
