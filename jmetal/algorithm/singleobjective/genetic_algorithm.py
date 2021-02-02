@@ -44,6 +44,7 @@ class GeneticAlgorithm(EvolutionaryAlgorithm[S, R]):
 
         self.termination_criterion = termination_criterion
         self.observable.register(termination_criterion)
+        self.iters = 0
 
         self.mating_pool_size = \
             self.offspring_population_size * \

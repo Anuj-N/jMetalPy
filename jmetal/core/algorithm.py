@@ -149,6 +149,7 @@ class EvolutionaryAlgorithm(Algorithm[S, R], ABC):
 
     def update_progress(self) -> None:
         self.evaluations += self.offspring_population_size
+        self.iters += 1
 
         observable_data = self.get_observable_data()
         self.observable.notify_all(**observable_data)
@@ -166,6 +167,7 @@ class ParticleSwarmOptimization(Algorithm[FloatSolution, List[FloatSolution]], A
         super(ParticleSwarmOptimization, self).__init__()
         self.problem = problem
         self.swarm_size = swarm_size
+        self.iters = 0
 
     @abstractmethod
     def initialize_velocity(self, swarm: List[FloatSolution]) -> None:
@@ -232,3 +234,4 @@ class ParticleSwarmOptimization(Algorithm[FloatSolution, List[FloatSolution]], A
     @property
     def label(self) -> str:
         return f'{self.get_name()}.{self.problem.get_name()}'
+

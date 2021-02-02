@@ -202,14 +202,15 @@ class SMPSO(ParticleSwarmOptimization):
 
 	def update_progress(self) -> None:
 		self.evaluations += self.swarm_size
+		self.iters += 1
 		self.leaders.compute_density_estimator()
 
 		observable_data = self.get_observable_data()
 		observable_data['SOLUTIONS'] = self.leaders.solution_list
 		self.observable.notify_all(**observable_data)
 
-	def get_result(self) -> List[FloatSolution]:
-		return self.leaders.solution_list
+	def get_result(self, get_iters=False) -> List[FloatSolution]:
+		return (self.leaders.solution_list, self.iters) if get_iters else self.leaders.solution_list 
 
 	def get_name(self) -> str:
 		return 'SMPSO'
@@ -458,7 +459,7 @@ class EMSMPSO(SMPSO) :
 		k = 4*(1 - beta)
 		delta = pow(phi, 2) - k*phi
 
-		if delta <= 0 :
+		if delta < 0 :
 			return 1
 		else :
 			eig = (abs(phi-2) + sqrt(delta))/2

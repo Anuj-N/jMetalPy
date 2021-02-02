@@ -13,4 +13,3 @@ __all__ = [
     'LZ09_F2',
     'OneMax', 'Sphere'
 ]
-

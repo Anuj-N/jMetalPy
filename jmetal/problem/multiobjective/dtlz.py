@@ -260,4 +260,3 @@ class DTLZ7(DTLZ1):
 
     def get_name(self):
         return 'DTLZ7'
-

@@ -9,4 +9,3 @@ from .omopso import OMOPSO
 from .random_search import RandomSearch
 from .smpso import SMPSO, SMPSORP, DynamicSMPSO, EMSMPSO
 from .spea2 import SPEA2
-

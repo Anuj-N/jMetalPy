@@ -52,7 +52,7 @@ class NSGAII(GeneticAlgorithm[S, R]):
 
         * K. Deb, A. Pratap, S. Agarwal and T. Meyarivan, "A fast and elitist
           multiobjective genetic algorithm: NSGA-II," in IEEE Transactions on Evolutionary Computation,
-          vol. 6, no. 2, pp. 182-197, Apr 2002. doi: 10.11094235.996017
+          vol. 6, no. 2, pp. 182-197, Apr 2002. doi: 10.1109/4235.996017
 
         NSGA-II is a genetic algorithm (GA), i.e. it belongs to the evolutionary algorithms (EAs)
         family. The implementation of NSGA-II provided in jMetalPy follows the evolutionary
@@ -95,8 +95,8 @@ class NSGAII(GeneticAlgorithm[S, R]):
 
         return solutions
 
-    def get_result(self) -> R:
-        return self.solutions
+    def get_result(self, get_iters=False) -> R:
+    	return (self.solutions, self.iters) if get_iters else self.solutions
 
     def get_name(self) -> str:
         return 'NSGAII'

@@ -270,7 +270,7 @@ class Spacing(QualityIndicator) :
 		        if i != j
 		    ])
 		    for i, x in enumerate(front)
-		]), ddof=1) if len(front) > 1 else 0
+		]), ddof=1)
 
 	def get_short_name(self) -> str:
 		return 'Spacing'
@@ -376,4 +376,3 @@ class MultiList:
             node.next[i].prev[i] = node
             if bounds[i] > node.cargo[i]:
                 bounds[i] = node.cargo[i]
-
