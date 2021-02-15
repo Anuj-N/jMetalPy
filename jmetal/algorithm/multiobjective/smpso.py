@@ -614,7 +614,7 @@ class FCPSO_Omega(SMPSO) :
 		self.r2_max = 1.0
 		self.change_velocity1 = -1
 		self.change_velocity2 = -1
-		self.omega_min, self.omega_max = 0, 1
+		self.omega_min, self.omega_max = 2, 4
 
 		self.dominance_comparator = DominanceComparator()
 		self.speed = numpy.zeros((self.swarm_size, self.problem.number_of_variables), dtype=float)
