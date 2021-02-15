@@ -210,7 +210,7 @@ class SMPSO(ParticleSwarmOptimization):
 		self.observable.notify_all(**observable_data)
 
 	def get_result(self, get_iters=False) -> List[FloatSolution]:
-		return (self.leaders.solution_list, self.iters) if get_iters else self.leaders.solution_list 
+		return (self.leaders.solution_list, self.iters) if get_iters else self.leaders.solution_list
 
 	def get_name(self) -> str:
 		return 'SMPSO'
@@ -433,6 +433,208 @@ class EMSMPSO(SMPSO) :
 			c1 = round(random.uniform(self.c1_min, self.c1_max), 1)
 			c2 = round(random.uniform(self.c2_min, self.c2_max), 1)
 			beta = round(random.uniform(self.beta_min, self.beta_max), 1)
+
+			for var in range(swarm[i].number_of_variables):
+				self.momentum[i][var] = beta*self.momentum[i][var] + (1-beta)*self.speed[i][var]
+				self.speed[i][var] = \
+					self.__velocity_constriction(
+						self.__constriction_coefficient(c1, c2, beta) *
+						(self.momentum[i][var] + \
+							(c1 * r1 * (best_particle.variables[var] - swarm[i].variables[var])) + \
+							(c2 * r2 * (best_global.variables[var] - swarm[i].variables[var]))
+						),
+						self.delta_max, self.delta_min, var)
+
+	def __velocity_constriction(self, value: float, delta_max: [], delta_min: [], variable_index: int) -> float:
+		result = value
+		if value > delta_max[variable_index]:
+			result = delta_max[variable_index]
+		if value < delta_min[variable_index]:
+			result = delta_min[variable_index]
+
+		return result
+
+	def __constriction_coefficient(self, c1: float, c2: float, beta: float) -> float:
+		phi = c1 + c2
+		k = 4*(1 - beta)
+		delta = pow(phi, 2) - k*phi
+
+		if delta < 0 :
+			return 1
+		else :
+			eig = (abs(phi-2) + sqrt(delta))/2
+			return 1 if eig <= 1 else -1/eig
+
+def _change_reference_point(algorithm: SMPSORP):
+	""" Auxiliar function to read new reference points from the keyboard for the SMPSO/RP algorithm
+	"""
+	number_of_reference_points = len(algorithm.reference_points)
+	number_of_objectives = algorithm.problem.number_of_objectives
+
+	while True:
+		print(f'Enter {number_of_reference_points}-points of dimension {number_of_objectives}: ')
+		read = [float(x) for x in input().split()]
+
+		# Update reference points
+		reference_points = []
+		for i in range(0, len(read), number_of_objectives):
+			reference_points.append(read[i:i + number_of_objectives])
+
+		algorithm.update_reference_point(reference_points)
+
+
+
+class FCPSO_Beta(SMPSO) :
+	def __init__(self,
+				 problem: FloatProblem,
+				 swarm_size: int,
+				 mutation: Mutation,
+				 leaders: Optional[BoundedArchive],
+				 termination_criterion: TerminationCriterion = store.default_termination_criteria,
+				 swarm_generator: Generator = store.default_generator,
+				 swarm_evaluator: Evaluator = store.default_evaluator) :
+
+		super(SMPSO, self).__init__(
+			problem=problem,
+			swarm_size=swarm_size)
+		self.swarm_generator = swarm_generator
+		self.swarm_evaluator = swarm_evaluator
+		self.termination_criterion = termination_criterion
+		self.observable.register(termination_criterion)
+		self.mutation_operator = mutation
+		self.leaders = leaders
+
+		self.c1_min = 1
+		self.c1_max = 1.73360098887876
+		self.c2_min = 1
+		self.c2_max = 1.73360098887876
+		self.r1_min = 0.0
+		self.r1_max = 1.0
+		self.r2_min = 0.0
+		self.r2_max = 1.0
+		self.change_velocity1 = -1
+		self.change_velocity2 = -1
+		self.beta_min, self.beta_max = 0, 1
+
+		self.dominance_comparator = DominanceComparator()
+		self.speed = numpy.zeros((self.swarm_size, self.problem.number_of_variables), dtype=float)
+		self.momentum = numpy.zeros((self.swarm_size, self.problem.number_of_variables), dtype=float)
+		self.delta_max, self.delta_min = numpy.empty(problem.number_of_variables), \
+										 numpy.empty(problem.number_of_variables)
+
+
+
+	def update_velocity(self, swarm: List[FloatSolution]) -> None:
+		for i in range(self.swarm_size):
+			best_particle = copy(swarm[i].attributes['local_best'])
+			best_global = self.select_global_best()
+
+			r1 = round(random.uniform(self.r1_min, self.r1_max), 1)
+			r2 = round(random.uniform(self.r2_min, self.r2_max), 1)
+			c1 = round(random.uniform(self.c1_min, self.c1_max), 1)
+			c2 = round(random.uniform(self.c2_min, self.c2_max), 1)
+			beta = round(random.uniform(self.beta_min, self.beta_max), 1)
+
+			for var in range(swarm[i].number_of_variables):
+				self.momentum[i][var] = beta*self.momentum[i][var] + (1-beta)*self.speed[i][var]
+				self.speed[i][var] = \
+					self.__velocity_constriction(
+						self.__constriction_coefficient(c1, c2, beta) *
+						(self.momentum[i][var] + \
+							(c1 * r1 * (best_particle.variables[var] - swarm[i].variables[var])) + \
+							(c2 * r2 * (best_global.variables[var] - swarm[i].variables[var]))
+						),
+						self.delta_max, self.delta_min, var)
+
+	def __velocity_constriction(self, value: float, delta_max: [], delta_min: [], variable_index: int) -> float:
+		result = value
+		if value > delta_max[variable_index]:
+			result = delta_max[variable_index]
+		if value < delta_min[variable_index]:
+			result = delta_min[variable_index]
+
+		return result
+
+	def __constriction_coefficient(self, c1: float, c2: float, beta: float) -> float:
+		phi = c1 + c2
+		k = 4*(1 - beta)
+		delta = pow(phi, 2) - k*phi
+
+		if delta < 0 :
+			return 1
+		else :
+			eig = (abs(phi-2) + sqrt(delta))/2
+			return 1 if eig <= 1 else -1/eig
+
+def _change_reference_point(algorithm: SMPSORP):
+	""" Auxiliar function to read new reference points from the keyboard for the SMPSO/RP algorithm
+	"""
+	number_of_reference_points = len(algorithm.reference_points)
+	number_of_objectives = algorithm.problem.number_of_objectives
+
+	while True:
+		print(f'Enter {number_of_reference_points}-points of dimension {number_of_objectives}: ')
+		read = [float(x) for x in input().split()]
+
+		# Update reference points
+		reference_points = []
+		for i in range(0, len(read), number_of_objectives):
+			reference_points.append(read[i:i + number_of_objectives])
+
+		algorithm.update_reference_point(reference_points)
+
+
+class FCPSO_Omega(SMPSO) :
+	def __init__(self,
+				 problem: FloatProblem,
+				 swarm_size: int,
+				 mutation: Mutation,
+				 leaders: Optional[BoundedArchive],
+				 termination_criterion: TerminationCriterion = store.default_termination_criteria,
+				 swarm_generator: Generator = store.default_generator,
+				 swarm_evaluator: Evaluator = store.default_evaluator) :
+
+		super(SMPSO, self).__init__(
+			problem=problem,
+			swarm_size=swarm_size)
+		self.swarm_generator = swarm_generator
+		self.swarm_evaluator = swarm_evaluator
+		self.termination_criterion = termination_criterion
+		self.observable.register(termination_criterion)
+		self.mutation_operator = mutation
+		self.leaders = leaders
+
+		self.c1_min = 1
+		self.c1_max = 2
+		self.c2_min = 1
+		self.c2_max = 2
+		self.r1_min = 0.0
+		self.r1_max = 1.0
+		self.r2_min = 0.0
+		self.r2_max = 1.0
+		self.change_velocity1 = -1
+		self.change_velocity2 = -1
+		self.omega_min, self.omega_max = 0, 1
+
+		self.dominance_comparator = DominanceComparator()
+		self.speed = numpy.zeros((self.swarm_size, self.problem.number_of_variables), dtype=float)
+		self.momentum = numpy.zeros((self.swarm_size, self.problem.number_of_variables), dtype=float)
+		self.delta_max, self.delta_min = numpy.empty(problem.number_of_variables), \
+										 numpy.empty(problem.number_of_variables)
+
+
+
+	def update_velocity(self, swarm: List[FloatSolution]) -> None:
+		for i in range(self.swarm_size):
+			best_particle = copy(swarm[i].attributes['local_best'])
+			best_global = self.select_global_best()
+
+			r1 = round(random.uniform(self.r1_min, self.r1_max), 1)
+			r2 = round(random.uniform(self.r2_min, self.r2_max), 1)
+			c1 = round(random.uniform(self.c1_min, self.c1_max), 1)
+			c2 = round(random.uniform(self.c2_min, self.c2_max), 1)
+			omega = round(random.uniform(self.omega_min, self.omega_max), 1)
+			beta = 4/omega - 1
 
 			for var in range(swarm[i].number_of_variables):
 				self.momentum[i][var] = beta*self.momentum[i][var] + (1-beta)*self.speed[i][var]

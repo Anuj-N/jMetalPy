@@ -89,7 +89,7 @@ class StoppingByQualityIndicator(TerminationCriterion):
         solutions = kwargs['SOLUTIONS']
 
         if solutions:
-            self.value = self.quality_indicator.compute([s.objectives for s in sols])
+            self.value = self.quality_indicator.compute([s.objectives for s in solutions])
 
     @property
     def is_met(self):

@@ -7,5 +7,5 @@ from .nsgaii import NSGAII, DistributedNSGAII, DynamicNSGAII
 from .nsgaiii import NSGAIII, UniformReferenceDirectionFactory
 from .omopso import OMOPSO
 from .random_search import RandomSearch
-from .smpso import SMPSO, SMPSORP, DynamicSMPSO, EMSMPSO
+from .smpso import SMPSO, SMPSORP, DynamicSMPSO, EMSMPSO, FCPSO_Beta, FCPSO_Omega
 from .spea2 import SPEA2
