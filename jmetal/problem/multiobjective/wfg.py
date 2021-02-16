@@ -8,8 +8,48 @@ from jmetal.core.solution import FloatSolution
 import math
 import copy
 import random
-from optproblems.multiobjective import MultiObjectiveTestProblem
-from optproblems.base import BoundConstraintError, Individual
+
+class Individual:
+    """A data structure to store objective values together with the solution.
+
+    Some methods of the problem classes expect objects with the two
+    attributes `phenome` and `objective_values`. The exact type of these
+    objects is irrelevant, but this class would be the obvious fit. The
+    term 'phenome' stems from biology and means the whole set of phenotypic
+    entities, in other words the form of appearance, of an animate being.
+    So, it matches quite well as description of what is evaluated by the
+    objective function.
+
+    """
+    def __init__(self, phenome=None, objective_values=None):
+        """Constructor.
+
+        Parameters
+        ----------
+        phenome : object, optional
+            An arbitrary object which somehow can be evaluated by an
+            objective function.
+        objective_values : float or list, optional
+            A single float or a list of objective values.
+
+        """
+        self.phenome = phenome
+        self.objective_values = objective_values
+
+
+class BoundConstraintError(ValueError):
+    """Used to report violations of bound constraints.
+
+    Inherits from :class:`ValueError`.
+
+    """
+    def __init__(self, value, min_bound, max_bound, variable_name=None):
+        bounds = "[" + str(min_bound) + ", " + str(max_bound) + "]"
+        if variable_name is None:
+            message = "Value " + str(value) + " out of bounds " + bounds
+        else:
+            message = "Variable " + variable_name + " (=" + str(value) + ") out of bounds " + bounds
+        ValueError.__init__(self, message)
 
 
 def correct_to_01(a, epsilon=1.0e-10):
@@ -494,7 +534,7 @@ class WFG1(WFG):
 		y = self.transition3(y)
 		y = self.transition4(y, self.k, self.m)
 		return self.shape(y)
-	
+
 	def get_name(self):
 		return 'WFG1'
 
