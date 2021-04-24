@@ -1,5 +1,7 @@
 # Fairly Constricted PSO
 
+Code for the arXiv paper `2104.10040` at https://arxiv.org/abs/2104.10040
+
 We have built three variants of SMPSO on top of the jmetalpy framework ---
 
     - EMSMPSO - Exponentially-Averaged Momentum-Boosted SMPSO
