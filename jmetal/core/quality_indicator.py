@@ -96,6 +96,7 @@ class EpsilonIndicator(QualityIndicator):
         self.reference_front = reference_front
 
     def compute(self, front: np.array) -> float:
+        print(f"this is front {front}")
         return max([min(
             [max([s2[k] - s1[k] for k in range(len(s2))]) for s2 in front]) for s1 in self.reference_front])
 
@@ -116,7 +117,7 @@ class HyperVolume(QualityIndicator):
     Minimization is implicitly assumed here!
     """
 
-    def __init__(self, reference_point: [float] = None):
+    def __init__(self, reference_point: float = None):
         super(HyperVolume, self).__init__(is_minimization=False)
         self.referencePoint = reference_point
         self.list: MultiList = []

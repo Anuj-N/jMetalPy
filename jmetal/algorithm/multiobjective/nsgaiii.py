@@ -352,8 +352,7 @@ class NSGAIII(NSGAII):
         """ Return only non dominated solutions."""
         ranking = FastNonDominatedRanking(self.dominance_comparator)
         ranking.compute_ranking(self.solutions, k=self.population_size)
-
-	return (ranking.get_subfront(0), self.iters) if get_iters else ranking.get_subfront(0)
+        return (ranking.get_subfront(0), self.iters) if get_iters else ranking.get_subfront(0)
 
     def get_name(self) -> str:
         return 'NSGAIII'

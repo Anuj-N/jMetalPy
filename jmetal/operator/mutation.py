@@ -4,6 +4,7 @@ from jmetal.core.operator import Mutation
 from jmetal.core.solution import BinarySolution, Solution, FloatSolution, IntegerSolution, PermutationSolution, \
     CompositeSolution
 from jmetal.util.ckecking import Check
+from typing import List
 
 """
 .. module:: mutation
@@ -243,7 +244,7 @@ class PermutationSwapMutation(Mutation[PermutationSolution]):
 
 
 class CompositeMutation(Mutation[Solution]):
-    def __init__(self, mutation_operator_list:[Mutation]):
+    def __init__(self, mutation_operator_list:List[Mutation]):
         super(CompositeMutation,self).__init__(probability=1.0)
 
         Check.is_not_none(mutation_operator_list)

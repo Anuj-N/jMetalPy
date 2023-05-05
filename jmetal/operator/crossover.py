@@ -413,7 +413,7 @@ class DifferentialEvolutionCrossover(Crossover[FloatSolution, FloatSolution]):
 class CompositeCrossover(Crossover[CompositeSolution, CompositeSolution]):
     __EPS = 1.0e-14
 
-    def __init__(self, crossover_operator_list:[Crossover]):
+    def __init__(self, crossover_operator_list: List[Crossover]):
         super(CompositeCrossover, self).__init__(probability=1.0)
 
         Check.is_not_none(crossover_operator_list)

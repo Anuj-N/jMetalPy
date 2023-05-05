@@ -136,6 +136,7 @@ def generate_summary_from_experiment(input_dir: str, quality_indicators: List[Qu
                             LOGGER.warning('Reference front not found at', reference_front_file)
 
                     result = indicator.compute([solutions[i].objectives for i in range(len(solutions))])
+                    # result = indicator.compute(solutions, [solutions[i].objectives for i in range(len(solutions))])
 
                     # Save quality indicator value to file
                     with open('QualityIndicatorSummary.csv', 'a+') as of:
