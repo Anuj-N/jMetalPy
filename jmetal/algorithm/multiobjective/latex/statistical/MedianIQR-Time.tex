@@ -1,0 +1,26 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{tabularx}
+\usepackage{colortbl}
+\usepackage[table*]{xcolor}
+\xdefinecolor{gray95}{gray}{0.65}
+\xdefinecolor{gray25}{gray}{0.8}
+\title{Median and IQR}
+\author{}
+\begin{document}
+\maketitle
+\section{Table}
+\begin{table}[!htp]
+  \caption{Median and Interquartile Range of the Time quality indicator.}
+  \label{table:Time}
+  \centering
+  \begin{scriptsize}
+  \begin{tabular}{c|ccc}
+      & \textbf{Chaotic\_EMPSO} & \textbf{NSGAII} & \textbf{SMPSO} \\\hline
+      \textbf{ZDT1} & $3.23e+03_{2.52e+02} $ & $ \cellcolor{gray25} 6.80e+00_{2.68e-01} $ & $ \cellcolor{gray95} 3.91e+00_{4.70e-01}$ \\
+      \textbf{ZDT2} & $\cellcolor{gray95} 3.22e+03_{1.78e+02} $ & $ \cellcolor{gray25} nan_{nan} $ & $ 4.06e+00_{4.58e-01}$ \\
+      \textbf{ZDT3} & $\cellcolor{gray95} 3.18e+03_{1.65e+02} $ & $ \cellcolor{gray25} nan_{nan} $ & $ 2.32e+00_{3.23e-01}$ \\
+  \end{tabular}
+  \end{scriptsize}
+\end{table}
+\end{document}

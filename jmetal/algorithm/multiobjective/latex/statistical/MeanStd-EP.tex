@@ -1,0 +1,26 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{tabularx}
+\usepackage{colortbl}
+\usepackage[table*]{xcolor}
+\xdefinecolor{gray95}{gray}{0.65}
+\xdefinecolor{gray25}{gray}{0.8}
+\title{Median and IQR}
+\author{}
+\begin{document}
+\maketitle
+\section{Table}
+\begin{table}[!htp]
+  \caption{Mean and Standard Deviation of the EP quality indicator.}
+  \label{table:EP}
+  \centering
+  \begin{scriptsize}
+  \begin{tabular}{c|ccc}
+      & \textbf{Chaotic\_EMPSO} & \textbf{NSGAII} & \textbf{SMPSO} \\\hline
+      \textbf{ZDT1} & $1.90e+00_{2.25e-01} $ & $ \cellcolor{gray25} 1.33e-02_{1.83e-03} $ & $ \cellcolor{gray95} 5.59e-03_{1.85e-04}$ \\
+      \textbf{ZDT2} & $\cellcolor{gray95} 3.11e+00_{3.45e-01} $ & $ \cellcolor{gray25} nan_{nan} $ & $ 5.45e-03_{1.56e-04}$ \\
+      \textbf{ZDT3} & $\cellcolor{gray95} 2.29e+00_{2.76e-01} $ & $ \cellcolor{gray25} nan_{nan} $ & $ 5.68e-03_{1.42e-03}$ \\
+  \end{tabular}
+  \end{scriptsize}
+\end{table}
+\end{document}

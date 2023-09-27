@@ -1,0 +1,26 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{tabularx}
+\usepackage{colortbl}
+\usepackage[table*]{xcolor}
+\xdefinecolor{gray95}{gray}{0.65}
+\xdefinecolor{gray25}{gray}{0.8}
+\title{Median and IQR}
+\author{}
+\begin{document}
+\maketitle
+\section{Table}
+\begin{table}[!htp]
+  \caption{Mean and Standard Deviation of the HV quality indicator.}
+  \label{table:HV}
+  \centering
+  \begin{scriptsize}
+  \begin{tabular}{c|ccc}
+      & \textbf{Chaotic\_EMPSO} & \textbf{NSGAII} & \textbf{SMPSO} \\\hline
+      \textbf{ZDT1} & $0.00e+00_{0.00e+00} $ & $ \cellcolor{gray25} 6.59e-01_{2.88e-04} $ & $ \cellcolor{gray95} 6.62e-01_{1.32e-04}$ \\
+      \textbf{ZDT2} & $0.00e+00_{0.00e+00} $ & $ \cellcolor{gray25} nan_{nan} $ & $ \cellcolor{gray95} 3.29e-01_{9.52e-05}$ \\
+      \textbf{ZDT3} & $8.25e-04_{3.19e-03} $ & $ \cellcolor{gray25} nan_{nan} $ & $ \cellcolor{gray95} 1.04e+00_{1.40e-03}$ \\
+  \end{tabular}
+  \end{scriptsize}
+\end{table}
+\end{document}

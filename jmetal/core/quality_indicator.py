@@ -57,8 +57,11 @@ class GenerationalDistance(QualityIndicator):
 
     def compute(self, solutions: np.array):
         if self.reference_front is None:
-            raise Exception('Reference front is none')
+            print(self.reference_front)
+            raise Exception(f'Reference front not found at {self.reference_front}')
+            # raise Exception('Reference front is none')
 
+        print(type(self.reference_front))
         distances = spatial.distance.cdist(solutions, self.reference_front)
 
         return np.mean(np.min(distances, axis=1))
@@ -131,6 +134,7 @@ class HyperVolume(QualityIndicator):
 
         def weakly_dominates(point, other):
             for i in range(len(point)):
+            # for i in range(len(other)):
                 if point[i] > other[i]:
                     return False
             return True

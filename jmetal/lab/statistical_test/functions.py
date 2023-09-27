@@ -19,16 +19,18 @@ def ranks(data: np.array, descending=False):
             values, indices, rep = np.unique(
                 (-1) ** s * np.sort((-1) ** s * data[i, :]), return_index=True, return_counts=True, )
             for j in range(data.shape[1]):
-                ranks[i, j] += indices[values == data[i, j]] + \
-                               0.5 * (rep[values == data[i, j]] - 1)
+                if np.isnan(data[i, j]):  # Check for NaN
+                    continue
+                ranks[i, j] += indices[values == data[i, j]] + 0.5 * (rep[values == data[i, j]] - 1)
         return ranks
     elif data.ndim == 1:
         ranks = np.ones((data.size,))
         values, indices, rep = np.unique(
             (-1) ** s * np.sort((-1) ** s * data), return_index=True, return_counts=True, )
         for i in range(data.size):
-            ranks[i] += indices[values == data[i]] + \
-                        0.5 * (rep[values == data[i]] - 1)
+            if np.isnan(data[i]):  # Check for NaN
+                continue
+            ranks[i] += indices[values == data[i]] + 0.5 * (rep[values == data[i]] - 1)
         return ranks
 
 

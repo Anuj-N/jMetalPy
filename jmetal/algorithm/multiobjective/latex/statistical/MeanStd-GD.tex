@@ -1,0 +1,26 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{tabularx}
+\usepackage{colortbl}
+\usepackage[table*]{xcolor}
+\xdefinecolor{gray95}{gray}{0.65}
+\xdefinecolor{gray25}{gray}{0.8}
+\title{Median and IQR}
+\author{}
+\begin{document}
+\maketitle
+\section{Table}
+\begin{table}[!htp]
+  \caption{Mean and Standard Deviation of the GD quality indicator.}
+  \label{table:GD}
+  \centering
+  \begin{scriptsize}
+  \begin{tabular}{c|ccc}
+      & \textbf{Chaotic\_EMPSO} & \textbf{NSGAII} & \textbf{SMPSO} \\\hline
+      \textbf{ZDT1} & $1.91e+00_{3.31e-01} $ & $ \cellcolor{gray25} 1.48e-03_{1.44e-04} $ & $ \cellcolor{gray95} 6.12e-04_{8.39e-05}$ \\
+      \textbf{ZDT2} & $\cellcolor{gray95} 2.26e+00_{4.40e-01} $ & $ \cellcolor{gray25} nan_{nan} $ & $ 4.38e-04_{4.38e-05}$ \\
+      \textbf{ZDT3} & $\cellcolor{gray95} 1.87e+00_{4.37e-01} $ & $ \cellcolor{gray25} nan_{nan} $ & $ 1.19e-03_{2.00e-04}$ \\
+  \end{tabular}
+  \end{scriptsize}
+\end{table}
+\end{document}
